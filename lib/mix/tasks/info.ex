@@ -51,6 +51,10 @@ defmodule Mix.Tasks.Info do
   end
 
   defp display(info) when is_list(info) do
+
+    config = Mix.Project.config
+    IO.puts "Application : #{config[:app]}"
+    IO.puts "version : #{config[:version]}"
     IO.inspect(info)
   end
 
