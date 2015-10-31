@@ -50,18 +50,21 @@ defmodule Mix.Tasks.Info do
     [{:file,1}]
   end
 
+  # Display the results in a nice formatted way
+  # TODO: the nice formatted way
   defp display(info) when is_list(info) do
-
     config = Mix.Project.config
     IO.puts "Application : #{config[:app]}"
     IO.puts "version : #{config[:version]}"
     IO.inspect(info)
   end
 
+  # merge a list of results(keyword lists)
   defp merge_results(res) when is_list(res) do
     Enum.reduce(res, Keyword.new, &merge_results/2)
   end
 
+  #merge two keyword lists containing results
   defp merge_results([], []), do: []
   defp merge_results([], res), do: res
   defp merge_results(res, []), do: res
