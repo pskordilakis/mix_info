@@ -58,15 +58,15 @@ defmodule Mix.Tasks.Info do
     IO.inspect(info)
   end
 
-  defp merge_results(res) do
-    Enum.reduce(res, Keyword.new, fn(res1, res2) ->
-      cond do
-        res1 == [] and res2 == [] -> []
-        res1 == [] -> res2
-        res2 == [] -> res1
-        true -> Keyword.merge(res1, res2, fn(_, v1, v2) -> v1+v2 end)
-      end
-    end)
+  defp merge_results(res) when is_list(res) do
+    Enum.reduce(res, Keyword.new, &merge_results/2)
+  end
+
+  defp merge_results([], []), do: []
+  defp merge_results([], res), do: res
+  defp merge_results(res, []), do: res
+  defp merge_results(res1, res2) do
+     Keyword.merge(res1, res2, fn(_, v1, v2) -> v1+v2 end)
   end
 
 end
