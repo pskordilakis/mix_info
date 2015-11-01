@@ -9,7 +9,6 @@ defmodule Mix.Tasks.Info do
   """
   def run([]) do
     #info is used as an accumulator
-    # dirs => -2 so lib and test does not count
     scanned_dirs = ["lib", "test"]
     info =
     scanned_dirs
@@ -40,14 +39,28 @@ defmodule Mix.Tasks.Info do
           |> Enum.map(&process_dir/1)
           |> merge_results
 
-        merge_results([[{:dir, 1}], dirs_info, files_info])
+        merge_results([[{:dirs, 1}], dirs_info, files_info])
 
       {:error, :enoent} -> Mix.Shell.IO.error("#{path} No such file or directory")
     end
   end
 
   defp process_file(path) do
-    [{:file,1}]
+    IO.puts(path)
+    File.stream!(path)
+      |> Enum.map(fn(line) ->
+          cond do
+            #skip regular expressions
+            line =~ ~r/line =~/   -> [{:lines, 1}]
+            line =~ ~r/\s#/       -> [{:comments, 1}, {:lines, 1}]
+            line =~ ~r/defmodule/ -> [{:modules, 1}, {:lines, 1}]
+            line =~ ~r/defp/      -> [{:private_functions, 1}, {:lines, 1}]
+            line =~ ~r/def/       -> [{:functions, 1}, {:lines, 1}]
+            true                  -> [{:lines, 1}]
+          end
+        end)
+      |> merge_results
+      |> merge_results [{:files,1}]
   end
 
   # Display the results in a nice formatted way
@@ -71,5 +84,4 @@ defmodule Mix.Tasks.Info do
   defp merge_results(res1, res2) do
      Keyword.merge(res1, res2, fn(_, v1, v2) -> v1+v2 end)
   end
-
 end
