@@ -64,12 +64,17 @@ defmodule Mix.Tasks.Info do
   end
 
   # Display the results in a nice formatted way
-  # TODO: the nice formatted way
   defp display(info) when is_list(info) do
     config = Mix.Project.config
-    IO.puts "Application : #{config[:app]}"
-    IO.puts "version : #{config[:version]}"
-    IO.inspect(info)
+    IO.puts(IO.ANSI.white <> "Application : " <> IO.ANSI.yellow <> "#{config[:app]}")
+    IO.puts(IO.ANSI.white <> "version : " <> IO.ANSI.green <> "#{config[:version]}")
+    IO.puts(IO.ANSI.white <> "directories : " <> IO.ANSI.blue <> "#{info[:dirs]}")
+    IO.puts(IO.ANSI.white <> "files : " <> IO.ANSI.red <> "#{info[:files]}")
+    IO.puts(IO.ANSI.white <> "lines : " <> IO.ANSI.yellow <> "#{info[:lines]}")
+    IO.puts(IO.ANSI.white <> "modules : " <> IO.ANSI.magenta <> "#{info[:modules]}")
+    IO.puts(IO.ANSI.white <> "functions : " <> IO.ANSI.green <> "#{info[:functions]}")
+    IO.puts(IO.ANSI.white <> "private functions : " <> IO.ANSI.red <> "#{info[:private_functions]}")
+    IO.puts(IO.ANSI.white <> "comments : " <> IO.ANSI.cyan <> "#{info[:comments]}")
   end
 
   # merge a list of results(keyword lists)
