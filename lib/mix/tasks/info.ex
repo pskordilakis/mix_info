@@ -39,7 +39,7 @@ defmodule Mix.Tasks.Info do
           |> Enum.map(&process_dir/1)
           |> merge_results
 
-        merge_results([[{:dirs, 1}], dirs_info, files_info])
+        merge_results([[dirs: 1], dirs_info, files_info])
 
       {:error, :enoent} -> Mix.Shell.IO.error("#{path} No such file or directory")
     end
@@ -51,16 +51,16 @@ defmodule Mix.Tasks.Info do
       |> Enum.map(fn(line) ->
           cond do
             #skip regular expressions
-            line =~ ~r/line =~/   -> [{:lines, 1}]
-            line =~ ~r/\s#/       -> [{:comments, 1}, {:lines, 1}]
-            line =~ ~r/defmodule/ -> [{:modules, 1}, {:lines, 1}]
-            line =~ ~r/defp/      -> [{:private_functions, 1}, {:lines, 1}]
-            line =~ ~r/def/       -> [{:functions, 1}, {:lines, 1}]
-            true                  -> [{:lines, 1}]
+            line =~ ~r/line =~/   -> [lines: 1]
+            line =~ ~r/\s#/       -> [comments: 1, lines: 1]
+            line =~ ~r/defmodule/ -> [modules: 1, lines: 1]
+            line =~ ~r/defp/      -> [private_functions: 1, lines: 1]
+            line =~ ~r/def/       -> [functions: 1, lines: 1]
+            true                  -> [lines: 1]
           end
         end)
       |> merge_results
-      |> merge_results [{:files,1}]
+      |> merge_results [files: 1]
   end
 
   # Display the results in a nice formatted way
