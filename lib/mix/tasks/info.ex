@@ -46,18 +46,20 @@ defmodule Mix.Tasks.Info do
   end
 
   defp process_file(path) do
-    IO.puts(path)
     File.stream!(path)
       |> Enum.map(fn(line) ->
-          cond do
-            #skip regular expressions
-            line =~ ~r/line =~/   -> [lines: 1]
-            line =~ ~r/\s#/       -> [comments: 1, lines: 1]
-            line =~ ~r/defmodule/ -> [modules: 1, lines: 1]
-            line =~ ~r/defp/      -> [private_functions: 1, lines: 1]
-            line =~ ~r/def/       -> [functions: 1, lines: 1]
-            true                  -> [lines: 1]
+          striped = String.strip(line)
+          #Assumption comments are in their own lines
+          res = cond do
+            striped =~ ~r/#/       -> [comments: 1]
+            striped =~ ~r/^defmodule/ -> [modules: 1]
+            striped =~ ~r/^defp/      -> [private_functions: 1]
+            striped =~ ~r/^def/       -> [functions: 1]
+            true                  -> []
           end
+          
+          merge_results(res, [lines: 1])
+
         end)
       |> merge_results
       |> merge_results [files: 1]
