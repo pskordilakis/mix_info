@@ -13,3 +13,20 @@ If [available in Hex](https://hex.pm/docs/publish), the package can be installed
         def deps do
           [{:mix_info, "~> 0.0.1"}]
         end
+
+## Usage
+
+Just run `mix info`
+
+```
+$> mix info
+Application : mix_info
+version : 0.7.2
+directories : 4
+files : 1
+lines : 94
+modules : 1
+functions : 1
+private functions : 8
+comments : 19
+```
