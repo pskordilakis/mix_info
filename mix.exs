@@ -25,9 +25,9 @@ defmodule Stats.Mixfile do
   end
 
   defp package do
-    files: ["lib", "mix.exs", "README.md", "LICENSE"],
+    [files: ["lib", "mix.exs", "README.md", "LICENSE"],
     maintainers: ["Panagiotis Skordilakis"],
     licenses: ["MIT"],
-    links: %{"GitHub" => "https://github.com/pskordilakis/mix_info"}
+    links: %{"GitHub" => "https://github.com/pskordilakis/mix_info"}]
   end
 end
