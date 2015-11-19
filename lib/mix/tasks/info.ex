@@ -1,6 +1,7 @@
 defmodule Mix.Tasks.Info do
   use Mix.Task
 
+  #TODO: create archive and remove installation intructions to add in deps
   @shortdoc "Display project code info"
 
   @moduledoc """
@@ -8,12 +9,11 @@ defmodule Mix.Tasks.Info do
   lines of codes etc
   """
   def run([]) do
+    lib_info = process_dir("lib")
+    test_info = process_dir("test")
+
     #info is used as an accumulator
-    scanned_dirs = ["lib", "test"]
-    info =
-    scanned_dirs
-      |> Enum.map(&process_dir/1)
-      |> merge_results
+    info = merge_results(lib_info, test_info)
 
     display(info)
   end
@@ -39,7 +39,7 @@ defmodule Mix.Tasks.Info do
           |> Enum.map(&process_dir/1)
           |> merge_results
 
-        merge_results([[dirs: 1], dirs_info, files_info])
+        merge_results([[directories: 1], dirs_info, files_info])
 
       {:error, :enoent} -> Mix.Shell.IO.error("#{path} No such file or directory")
     end
@@ -55,9 +55,12 @@ defmodule Mix.Tasks.Info do
             striped =~ ~r/^defmodule/ -> [modules: 1]
             striped =~ ~r/^defp/      -> [private_functions: 1]
             striped =~ ~r/^def/       -> [functions: 1]
+            striped =~ ~r/^@doc/       -> [docs: 1]
+            striped =~ ~r/^@moduledoc/ -> [moduledocs: 1]
+            striped =~ ~r/^iex>/       -> [doctests: 1]
             true                  -> []
           end
-          
+
           merge_results(res, [lines: 1])
 
         end)
@@ -67,16 +70,22 @@ defmodule Mix.Tasks.Info do
 
   # Display the results in a nice formatted way
   defp display(info) when is_list(info) do
+    display_title
+    info
+      |> Enum.map(&display_info/1)
+  end
+
+  defp display_title do
     config = Mix.Project.config
-    IO.puts(IO.ANSI.white <> "Application : " <> IO.ANSI.yellow <> "#{config[:app]}")
-    IO.puts(IO.ANSI.white <> "version : " <> IO.ANSI.green <> "#{config[:version]}")
-    IO.puts(IO.ANSI.white <> "directories : " <> IO.ANSI.blue <> "#{info[:dirs]}")
-    IO.puts(IO.ANSI.white <> "files : " <> IO.ANSI.red <> "#{info[:files]}")
-    IO.puts(IO.ANSI.white <> "lines : " <> IO.ANSI.yellow <> "#{info[:lines]}")
-    IO.puts(IO.ANSI.white <> "modules : " <> IO.ANSI.magenta <> "#{info[:modules]}")
-    IO.puts(IO.ANSI.white <> "functions : " <> IO.ANSI.green <> "#{info[:functions]}")
-    IO.puts(IO.ANSI.white <> "private functions : " <> IO.ANSI.red <> "#{info[:private_functions]}")
-    IO.puts(IO.ANSI.white <> "comments : " <> IO.ANSI.cyan <> "#{info[:comments]}")
+    [:yellow, "#{config[:app]}", :white, ": ", :green, "#{config[:version]}", :reset]
+      |> IO.ANSI.format
+      |> IO.puts
+  end
+
+  defp display_info({name, value}) do
+    [:blue, name |> Atom.to_string |> String.replace("_", " "), :white, ": #{value}"]
+      |> IO.ANSI.format
+      |> IO.puts
   end
 
   # merge a list of results(keyword lists)
