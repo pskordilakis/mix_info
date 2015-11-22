@@ -9,40 +9,23 @@ defmodule Mix.Tasks.Info do
   lines of codes etc
   """
   def run([]) do
-    lib_info = process_dir("lib")
-    test_info = process_dir("test")
-
-    #info is used as an accumulator
-    info = merge_results(lib_info, test_info)
-
-    display(info)
+    Mix.Project.get!
+    paths = Path.wildcard("lib/**")
+    files = Mix.Utils.extract_files(Path.wildcard("lib/**"), [".ex"])
+    files
+      |> Enum.map(&process_file/1)
+      |> merge_results
+      |> merge_results([directories: count_directories(paths -- files)])
+      |> display
   end
 
-  defp process_dir(path) do
-    case File.ls(path) do
-      {:ok, content} ->
-        #files
-        files = content
-          |> Enum.map(&(Path.join(path, &1)))
-          |> Enum.filter(&(not File.dir?(&1)))
-
-        #process files
-        files_info = files
-          |> Enum.map(&process_file/1)
-          |> merge_results
-
-
-        #dirs
-        dirs_info = content
-          |> Enum.map(&(Path.join(path, &1)))
-          |> Enum.filter(&File.dir?/1)
-          |> Enum.map(&process_dir/1)
-          |> merge_results
-
-        merge_results([[directories: 1], dirs_info, files_info])
-
-      {:error, :enoent} -> Mix.Shell.IO.error("#{path} No such file or directory")
-    end
+  defp count_directories(paths) do
+    paths
+      |> Enum.map(&(Path.relative_to(&1,"lib")))
+      |> Enum.map(&Path.split/1)
+      |> List.flatten
+      |> Enum.uniq
+      |> Enum.count
   end
 
   defp process_file(path) do
