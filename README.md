@@ -4,17 +4,10 @@ A mix task that counts directories, files, lines of code, modules, functions etc
 
 ## Installation
 
-  1. Add mix_info to your list of dependencies in `mix.exs`:
-
-  ```elixir
-  def deps do
-      [{:mix_info, "~> 0.7.2"}]
-  end
-  ```
-  2. Update your dependencies
+  1. Install the archive:
 
   ```sh-session
-  $ mix deps.get
+  $ mix archive.install https://github.com/pskordilakis/mix_info/releases/download/v0.7.3/mix_info-0.7.3.ez
   ```
 
 ## Usage
@@ -23,13 +16,13 @@ Just run `mix info`
 
 ```sh-session
 $ mix info
-Application : mix_info
-version : 0.7.2
-directories : 4
-files : 1
-lines : 94
-modules : 1
-functions : 1
-private functions : 8
-comments : 19
+mix_info: 0.7.3
+comments: 7
+directories: 2
+files: 1
+functions: 1
+lines: 87
+moduledocs: 1
+modules: 1
+private functions: 10
 ```
