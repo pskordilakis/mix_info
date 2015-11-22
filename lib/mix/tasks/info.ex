@@ -1,8 +1,8 @@
 defmodule Mix.Tasks.Info do
   use Mix.Task
 
-  #TODO: create archive and remove installation intructions to add in deps
   @shortdoc "Display project code info"
+  @recursive true
 
   @moduledoc """
   A mix task to display code information like number of modules, functions,
@@ -16,6 +16,7 @@ defmodule Mix.Tasks.Info do
       |> Enum.map(&process_file/1)
       |> merge_results
       |> merge_results([directories: count_directories(paths -- files)])
+      |> Enum.sort
       |> display
   end
 
