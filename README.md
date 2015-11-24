@@ -7,7 +7,7 @@ A mix task that counts directories, files, lines of code, modules, functions etc
   1. Install the archive:
 
   ```sh-session
-  $ mix archive.install https://github.com/pskordilakis/mix_info/releases/download/v0.7.3/mix_info-0.7.3.ez
+  $ mix archive.install https://github.com/pskordilakis/mix_info/releases/download/v0.7.4/mix_info-0.7.4.ez
   ```
 
 ## Usage
