@@ -24,8 +24,6 @@ defmodule Mix.Tasks.Info do
     paths
       |> Enum.map(&(Path.relative_to(&1,"lib")))
       |> Enum.map(&Path.split/1)
-      |> List.flatten
-      |> Enum.uniq
       |> Enum.count
   end
 
